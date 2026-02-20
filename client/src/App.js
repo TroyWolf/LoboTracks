@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Routes, Route, useMatch, useNavigate } from 'react-router-dom';
 import TrackList from './components/TrackList';
 import TrackMap from './components/TrackMap';
 
@@ -6,7 +7,6 @@ export default function App() {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedTrack, setSelectedTrack] = useState(null); // filename string
 
   useEffect(() => {
     fetch('/api/tracks')
@@ -14,6 +14,13 @@ export default function App() {
       .then(data => { setTracks(data); setLoading(false); })
       .catch(() => { setError('Failed to load tracks from server.'); setLoading(false); });
   }, []);
+
+  const navigate = useNavigate();
+  const match = useMatch('/track/:filename');
+  const selectedTrack = match?.params?.filename ? decodeURIComponent(match.params.filename) : null;
+  const handleBack = useCallback(() => {
+    if (window.history.length > 2) navigate(-1); else navigate('/');
+  }, [navigate]);
 
   return (
     <div style={{ minHeight: '100vh', background: '#0f172a', color: '#f1f5f9' }}>
@@ -33,7 +40,7 @@ export default function App() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           {selectedTrack && (
             <button
-              onClick={() => setSelectedTrack(null)}
+              onClick={handleBack}
               style={{
                 background: 'rgba(255,255,255,0.12)',
                 border: 'none',
@@ -53,10 +60,15 @@ export default function App() {
               ← Back
             </button>
           )}
-          <span style={{ fontSize: '1.15rem', fontWeight: 700, letterSpacing: 0.3, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <a href="/" onClick={(e) => {
+            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            navigate('/');
+          }}
+          style={{ fontSize: '1.15rem', fontWeight: 700, letterSpacing: 0.3, display: 'flex', alignItems: 'center', gap: 8, color: 'inherit', textDecoration: 'none' }}>
             <img src="/logo-paw-pin.svg" alt="LoboTracks" style={{ height: 20, width: 20 }} />
             LoboTracks
-          </span>
+          </a>
           {selectedTrack && (
             <span style={{ fontSize: 13, opacity: 0.6, marginLeft: 4 }}>
               / {tracks.find(t => t.filename === selectedTrack)?.title || selectedTrack}
@@ -89,12 +101,12 @@ export default function App() {
         </div>
       )}
 
-      {!loading && !error && !selectedTrack && (
-        <TrackList tracks={tracks} onSelect={setSelectedTrack} />
-      )}
-
-      {!loading && !error && selectedTrack && (
-        <TrackMap filename={selectedTrack} onBack={() => setSelectedTrack(null)} />
+      {!loading && !error && (
+        <Routes>
+          <Route path="/" element={<TrackList tracks={tracks} />} />
+          <Route path="/track/:filename" element={<TrackMap onBack={handleBack} />} />
+          <Route path="*" element={<TrackList tracks={tracks} />} />
+        </Routes>
       )}
     </div>
   );

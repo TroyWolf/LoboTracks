@@ -1,12 +1,22 @@
 import React from "react"
+import { Link } from 'react-router-dom'
 
 function DownloadButton({ filename }) {
   const url = `/api/tracks/${encodeURIComponent(filename)}/download`
+  const handleClick = (e) => {
+    e.stopPropagation()
+    // Programmatically create an anchor to trigger download so nested anchors are avoided
+    const a = document.createElement("a")
+    a.href = url
+    a.download = ""
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+  }
   return (
-    <a
-      href={`/api/tracks/${encodeURIComponent(filename)}/download`}
-      download
-      onClick={(e) => e.stopPropagation()}
+    <button
+      type="button"
+      onClick={handleClick}
       style={{
         background: "rgba(59,130,246,0.15)",
         border: "1px solid rgba(59,130,246,0.35)",
@@ -22,6 +32,7 @@ function DownloadButton({ filename }) {
         whiteSpace: "nowrap",
         flexShrink: 0,
         transition: "all 0.15s",
+        cursor: "pointer",
       }}
       onMouseOver={(e) => {
         e.currentTarget.style.background = "rgba(59,130,246,0.28)"
@@ -33,7 +44,7 @@ function DownloadButton({ filename }) {
       }}
     >
       ⬇ Download GPX
-    </a>
+    </button>
   )
 }
 
@@ -74,13 +85,13 @@ function Chip({ icon, label, mono, href }) {
 const mToFt = (m) => Math.round(m * 3.28084).toLocaleString()
 const kmToMi = (km) => (km * 0.621371).toFixed(1)
 
-function TrackCard({ track, onSelect }) {
+function TrackCard({ track }) {
   const [hovered, setHovered] = React.useState(false)
   const { stats } = track
 
   return (
-    <div
-      onClick={() => onSelect(track.filename)}
+    <Link
+      to={`/track/${encodeURIComponent(track.filename)}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -97,6 +108,8 @@ function TrackCard({ track, onSelect }) {
         display: "flex",
         flexDirection: "column",
         gap: 14,
+        color: "inherit",
+        textDecoration: "none",
       }}
     >
       {/* Title row */}
@@ -225,7 +238,7 @@ function TrackCard({ track, onSelect }) {
           Click to view map →
         </span>
       </div>
-    </div>
+    </Link>
   )
 }
 
@@ -249,7 +262,7 @@ function StatBox({ icon, label, value }) {
   )
 }
 
-export default function TrackList({ tracks, onSelect }) {
+export default function TrackList({ tracks }) {
   if (tracks.length === 0) {
     return (
       <div
@@ -313,7 +326,7 @@ export default function TrackList({ tracks, onSelect }) {
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {tracks.map((track) => (
-          <TrackCard key={track.filename} track={track} onSelect={onSelect} />
+          <TrackCard key={track.filename} track={track} />
         ))}
       </div>
     </div>
