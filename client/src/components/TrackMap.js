@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -38,14 +39,18 @@ function StatBadge({ icon, value, label }) {
   );
 }
 
-export default function TrackMap({ filename }) {
+export default function TrackMap({ onBack }) {
   const mapRef  = useRef(null);
   const mapInst = useRef(null);
   const [data, setData]       = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
+  const params = useParams();
+  const navigate = useNavigate();
+  const filename = params?.filename ? decodeURIComponent(params.filename) : null;
 
   useEffect(() => {
+    if (!filename) return;
     setLoading(true);
     setError(null);
     fetch(`/api/tracks/${encodeURIComponent(filename)}`)
@@ -160,6 +165,29 @@ export default function TrackMap({ filename }) {
 
       {/* Map area */}
       <div style={{ flex: 1, position: 'relative' }}>
+        {/* Back button (in-map) */}
+        <button
+          onClick={() => {
+            if (typeof onBack === 'function') return onBack();
+            if (window.history.length > 1) return navigate(-1);
+            navigate('/');
+          }}
+          style={{
+            position: 'absolute',
+            left: 12,
+            top: 12,
+            zIndex: 20,
+            background: 'rgba(10,17,32,0.9)',
+            color: '#e2e8f0',
+            border: '1px solid #1e3a5f',
+            borderRadius: 8,
+            padding: '6px 10px',
+            cursor: 'pointer',
+            fontSize: 13,
+          }}
+        >
+          ← Back
+        </button>
         {loading && (
           <div style={{ position: 'absolute', inset: 0, background: '#0f172a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, zIndex: 10 }}>
             <div style={{ width: 40, height: 40, border: '3px solid #334155', borderTop: '3px solid #3b82f6', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
