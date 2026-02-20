@@ -2,7 +2,6 @@ import React from "react"
 
 function DownloadButton({ filename }) {
   const url = `/api/tracks/${encodeURIComponent(filename)}/download`
-  console.log({filename, url})
   return (
     <a
       href={`/api/tracks/${encodeURIComponent(filename)}/download`}

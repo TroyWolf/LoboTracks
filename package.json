@@ -1,18 +1,19 @@
 {
-  "name": "LoboTracks",
+  "name": "lobotracks",
+  "private": true,
   "version": "1.0.0",
   "description": "GPX file viewer with interactive maps",
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "scripts": {
-    "install:all": "npm install && cd client && npm install",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "node server/index.js",
-    "client": "cd client && npm start",
-    "build": "cd client && npm run build",
-    "start": "node server/index.js"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "install:all": "npm install",
+    "dev": "concurrently \"npm --workspace=server run start\" \"npm --workspace=client run start\"",
+    "server": "npm --workspace=server run start",
+    "client": "npm --workspace=client run start",
+    "build": "npm --workspace=client run build",
+    "start": "npm --workspace=server run start"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
