@@ -5,7 +5,7 @@ function DownloadButton({ filename }) {
   console.log({filename, url})
   return (
     <a
-      href={`http://localhost:3001/api/tracks/${encodeURIComponent(filename)}/download`}
+      href={`/api/tracks/${encodeURIComponent(filename)}/download`}
       download
       onClick={(e) => e.stopPropagation()}
       style={{
