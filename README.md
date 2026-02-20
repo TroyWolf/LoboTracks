@@ -16,20 +16,24 @@ A Node.js + React app for browsing, viewing, and downloading GPX track files.
 
 ## Project Structure
 
+This repo now uses npm workspaces with separate `client` and `server` packages.
+
 ```
 gpx-viewer/
-├── server/
-│   └── index.js          # Express API (parses GPX metadata server-side)
-├── client/               # React frontend
-│   ├── public/index.html
+├── server/               # Express API (parses GPX metadata server-side)
+│   ├── index.js
+│   └── package.json      # server workspace
+├── client/               # React + Vite frontend
+│   ├── index.html        # Vite entry HTML
+│   ├── package.json      # client workspace
 │   └── src/
 │       ├── App.js
 │       └── components/
-│           ├── TrackList.js   # File list with stats cards
-│           └── TrackMap.js    # Leaflet map view
+│           ├── TrackList.js
+│           └── TrackMap.js
 ├── gpx-files/            # ← Drop your .gpx files here
 │   └── Teter_Rock_1.gpx
-└── package.json
+└── package.json          # root workspace (scripts + workspaces)
 ```
 
 ---
@@ -54,27 +58,33 @@ If a field isn't present in your GPX file, it's simply omitted from the UI.
 
 ## Setup
 
-```bash
-# 1. Install all dependencies
-npm install
-cd client && npm install && cd ..
+Install dependencies for all workspaces from the repo root and start both the server and client in development:
 
-# 2. Add GPX files
+```bash
+# Install dependencies for root + workspaces
+npm install
+
+# Add GPX files
 cp your-ride.gpx gpx-files/
 
-# 3. Start in development mode (runs both server + React)
+# Start both server + client (runs concurrently)
 npm run dev
 ```
 
-Open **http://localhost:3000**
+Open **http://localhost:3000** (Vite dev server). The client proxies `/api` requests to the server on port `3001`.
 
 ---
 
 ## Production
 
+Build the client and serve the static output from the server:
+
 ```bash
-npm run build                    # Build React frontend
-NODE_ENV=production npm start    # Serve app + API on one port
+# Build the frontend (client workspace)
+npm run build
+
+# Serve the built assets with the server
+NODE_ENV=production npm start
 ```
 
 App available at **http://localhost:3001**
