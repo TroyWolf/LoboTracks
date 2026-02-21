@@ -68,10 +68,22 @@ export default function TrackMap({ onBack }) {
     const map = L.map(mapRef.current);
     mapInst.current = map;
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
       maxZoom: 19,
-    }).addTo(map);
+    });
+
+    const satellite = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        maxZoom: 19,
+      }
+    );
+
+    street.addTo(map);
+
+    L.control.layers({ 'Street': street, 'Satellite': satellite }).addTo(map);
 
     const { trackPoints, waypoints } = data;
 
