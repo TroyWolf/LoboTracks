@@ -40,11 +40,14 @@ function StatBadge({ icon, value, label }) {
 }
 
 export default function TrackMap({ onBack }) {
-  const mapRef  = useRef(null);
-  const mapInst = useRef(null);
-  const [data, setData]       = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
+  const mapRef           = useRef(null);
+  const mapInst          = useRef(null);
+  const streetLayerRef   = useRef(null);
+  const satelliteLayerRef = useRef(null);
+  const [data, setData]         = useState(null);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState(null);
+  const [isSatellite, setIsSatellite] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
   const filename = params?.filename ? decodeURIComponent(params.filename) : null;
@@ -68,10 +71,22 @@ export default function TrackMap({ onBack }) {
     const map = L.map(mapRef.current);
     mapInst.current = map;
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
       maxZoom: 19,
-    }).addTo(map);
+    });
+
+    const satellite = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        maxZoom: 19,
+      }
+    );
+
+    streetLayerRef.current = street;
+    satelliteLayerRef.current = satellite;
+    street.addTo(map);
 
     const { trackPoints, waypoints } = data;
 
@@ -121,6 +136,20 @@ export default function TrackMap({ onBack }) {
     return () => { if (mapInst.current) { mapInst.current.remove(); mapInst.current = null; } };
   }, [data]);
 
+  useEffect(() => {
+    const map = mapInst.current;
+    const street = streetLayerRef.current;
+    const sat = satelliteLayerRef.current;
+    if (!map || !street || !sat) return;
+    if (isSatellite) {
+      if (map.hasLayer(street)) map.removeLayer(street);
+      if (!map.hasLayer(sat)) sat.addTo(map);
+    } else {
+      if (map.hasLayer(sat)) map.removeLayer(sat);
+      if (!map.hasLayer(street)) street.addTo(map);
+    }
+  }, [isSatellite, data]);
+
   const { stats, meta } = data || {};
 
   return (
@@ -160,6 +189,13 @@ export default function TrackMap({ onBack }) {
         >
           ← Back
         </button>
+        <button
+          onClick={() => setIsSatellite(s => !s)}
+          title={isSatellite ? 'Switch to Street' : 'Switch to Satellite'}
+          className={`absolute right-3 top-3 z-20 w-11 h-11 flex items-center justify-center rounded-lg border cursor-pointer text-2xl transition-colors ${isSatellite ? 'bg-sky-500/30 border-sky-400' : 'bg-slate-900/90 border-slate-700'}`}
+        >
+          🛰️
+        </button>
         {loading && (
           <div className="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center gap-4 z-10">
             <div className="spin" />
@@ -174,7 +210,7 @@ export default function TrackMap({ onBack }) {
             </div>
           </div>
         )}
-        <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
+        <div ref={mapRef} style={{ width: '100%', height: '100%', isolation: 'isolate' }} />
       </div>
     </div>
   );
