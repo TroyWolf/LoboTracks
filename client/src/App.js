@@ -23,39 +23,14 @@ export default function App() {
   }, [navigate]);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', color: '#f1f5f9' }}>
+    <div className="min-h-screen bg-slate-900 text-slate-100">
       {/* Header */}
-      <header style={{
-        background: 'linear-gradient(135deg, #1e3a5f 0%, #0f3460 100%)',
-        padding: '0 24px',
-        height: 56,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.4)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 1000,
-      }}>
+      <header className="bg-gradient-to-br from-sky-900 via-slate-900 to-slate-800 px-6 h-14 flex items-center justify-between shadow-md sticky top-0 z-50">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           {selectedTrack && (
             <button
               onClick={handleBack}
-              style={{
-                background: 'rgba(255,255,255,0.12)',
-                border: 'none',
-                color: '#fff',
-                borderRadius: 8,
-                padding: '6px 14px',
-                cursor: 'pointer',
-                fontSize: 13,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                transition: 'background 0.15s',
-              }}
-              onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-              onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
+              className="bg-white/12 hover:bg-white/20 text-white rounded-lg px-3 py-1.5 cursor-pointer text-sm flex items-center gap-2 transition"
             >
               ← Back
             </button>
@@ -65,7 +40,7 @@ export default function App() {
             e.preventDefault();
             navigate('/');
           }}
-          style={{ fontSize: '1.15rem', fontWeight: 700, letterSpacing: 0.3, display: 'flex', alignItems: 'center', gap: 8, color: 'inherit', textDecoration: 'none' }}>
+          className="text-lg font-extrabold tracking-tight flex items-center gap-2 text-inherit no-underline">
             <img src="/logo-paw-pin.svg" alt="LoboTracks" style={{ height: 20, width: 20 }} />
             LoboTracks
           </a>
@@ -76,7 +51,7 @@ export default function App() {
           )}
         </div>
         {!selectedTrack && (
-          <span style={{ fontSize: 12, opacity: 0.55 }}>
+          <span className="text-sm opacity-60">
             {tracks.length} track{tracks.length !== 1 ? 's' : ''} available
           </span>
         )}
@@ -84,19 +59,20 @@ export default function App() {
 
       {/* Content */}
       {loading && (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 56px)', flexDirection: 'column', gap: 16 }}>
-          <div style={{ width: 40, height: 40, border: '3px solid #334155', borderTop: '3px solid #3b82f6', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-          <span style={{ opacity: 0.5 }}>Loading tracks…</span>
-          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        <div className="flex justify-center items-center" style={{ height: 'calc(100vh - 56px)' }}>
+          <div className="flex flex-col items-center gap-4">
+            <div className="spin" />
+            <span className="opacity-50">Loading tracks…</span>
+          </div>
         </div>
       )}
 
       {error && (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 56px)' }}>
-          <div style={{ background: '#450a0a', border: '1px solid #dc2626', borderRadius: 12, padding: '24px 32px', textAlign: 'center' }}>
-            <div style={{ fontSize: '1.5rem', marginBottom: 8 }}>⚠️</div>
-            <div style={{ color: '#fca5a5' }}>{error}</div>
-            <div style={{ fontSize: 12, opacity: 0.6, marginTop: 8 }}>Is the server running on port 3001?</div>
+        <div className="flex justify-center items-center" style={{ height: 'calc(100vh - 56px)' }}>
+          <div className="bg-red-900 border border-red-600 rounded-xl p-6 text-center">
+            <div className="text-2xl mb-2">⚠️</div>
+            <div className="text-red-200">{error}</div>
+            <div className="text-sm opacity-60 mt-2">Is the server running on port 3001?</div>
           </div>
         </div>
       )}

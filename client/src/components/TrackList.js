@@ -17,31 +17,7 @@ function DownloadButton({ filename }) {
     <button
       type="button"
       onClick={handleClick}
-      style={{
-        background: "rgba(59,130,246,0.15)",
-        border: "1px solid rgba(59,130,246,0.35)",
-        color: "#93c5fd",
-        borderRadius: 8,
-        padding: "7px 14px",
-        fontSize: 13,
-        fontWeight: 600,
-        textDecoration: "none",
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 6,
-        whiteSpace: "nowrap",
-        flexShrink: 0,
-        transition: "all 0.15s",
-        cursor: "pointer",
-      }}
-      onMouseOver={(e) => {
-        e.currentTarget.style.background = "rgba(59,130,246,0.28)"
-        e.currentTarget.style.color = "#bfdbfe"
-      }}
-      onMouseOut={(e) => {
-        e.currentTarget.style.background = "rgba(59,130,246,0.15)"
-        e.currentTarget.style.color = "#93c5fd"
-      }}
+      className="bg-sky-500/15 border border-sky-500/35 text-sky-200 rounded-lg px-3 py-1.5 text-sm font-semibold inline-flex items-center gap-2 whitespace-nowrap flex-shrink-0 transition hover:bg-sky-500/30 hover:text-sky-100 cursor-pointer"
     >
       ⬇ Download GPX
     </button>
@@ -49,34 +25,16 @@ function DownloadButton({ filename }) {
 }
 
 function Chip({ icon, label, mono, href }) {
-  const style = {
-    background: "#0f172a",
-    border: "1px solid #1e3a5f",
-    borderRadius: 6,
-    padding: "3px 10px",
-    fontSize: 12,
-    color: "#64748b",
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 5,
-    fontFamily: mono ? "monospace" : "inherit",
-    textDecoration: "none",
-  }
+  const base = `bg-transparent border border-slate-800 rounded-md px-3 py-1 text-sm text-slate-400 inline-flex items-center gap-2 ${mono ? 'font-mono' : ''}`;
   if (href) {
     return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noreferrer"
-        style={{ ...style, color: "#60a5fa" }}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <a href={href} target="_blank" rel="noreferrer" className={`${base} text-sky-400`} onClick={(e) => e.stopPropagation()}>
         {icon} {label} ↗
       </a>
     )
   }
   return (
-    <span style={style}>
+    <span className={base}>
       {icon} {label}
     </span>
   )
@@ -86,88 +44,43 @@ const mToFt = (m) => Math.round(m * 3.28084).toLocaleString()
 const kmToMi = (km) => (km * 0.621371).toFixed(1)
 
 function TrackCard({ track }) {
-  const [hovered, setHovered] = React.useState(false)
   const { stats } = track
 
   return (
     <Link
       to={`/track/${encodeURIComponent(track.filename)}`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: hovered ? "#1e293b" : "#172033",
-        border: `1px solid ${hovered ? "#3b82f6" : "#1e3a5f"}`,
-        borderRadius: 14,
-        padding: "20px 24px",
-        cursor: "pointer",
-        transition: "all 0.18s",
-        transform: hovered ? "translateY(-2px)" : "none",
-        boxShadow: hovered
-          ? "0 8px 24px rgba(59,130,246,0.15)"
-          : "0 2px 8px rgba(0,0,0,0.3)",
-        display: "flex",
-        flexDirection: "column",
-        gap: 14,
-        color: "inherit",
-        textDecoration: "none",
-      }}
+      className="group bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-sky-500 rounded-[14px] p-5 cursor-pointer transition transform hover:-translate-y-1 shadow-md hover:shadow-lg flex flex-col gap-4 text-inherit no-underline"
     >
       {/* Title row */}
       <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: 16,
-        }}
+        className="flex items-start justify-between gap-4"
       >
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              marginBottom: 6,
-            }}
+            className="flex items-center gap-2 mb-1"
           >
             <span style={{ fontSize: "1.2rem" }}>🗺️</span>
             <h2
-              style={{
-                margin: 0,
-                fontSize: "1.05rem",
-                fontWeight: 700,
-                color: "#f1f5f9",
-                lineHeight: 1.3,
-              }}
+              className="m-0 text-base font-bold text-slate-100 leading-tight"
             >
               {track.title}
             </h2>
           </div>
           {track.description ? (
             <p
-              style={{
-                margin: 0,
-                fontSize: 13.5,
-                color: "#94a3b8",
-                lineHeight: 1.6,
-              }}
+              className="m-0 text-sm text-slate-400 leading-relaxed"
             >
               {track.description}
             </p>
           ) : (
             <p
-              style={{
-                margin: 0,
-                fontSize: 13,
-                color: "#475569",
-                fontStyle: "italic",
-              }}
+              className="m-0 text-sm text-slate-500 italic"
             >
               No description in GPX file
             </p>
           )}
         </div>
-        <div onClick={(e) => e.stopPropagation()} style={{ paddingTop: 2 }}>
+        <div onClick={(e) => e.stopPropagation()} className="pt-0.5">
           <DownloadButton filename={track.filename} />
         </div>
       </div>
@@ -175,11 +88,7 @@ function TrackCard({ track }) {
       {/* Stats row */}
       {stats && (
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
-            gap: 8,
-          }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-2"
         >
           <StatBox
             icon="📏"
@@ -210,33 +119,17 @@ function TrackCard({ track }) {
       )}
 
       {/* Meta chips */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 8,
-          alignItems: "center",
-        }}
-      >
+      <div className="flex flex-wrap gap-2 items-center">
         <Chip icon="📄" label={track.filename} mono />
         <Chip icon="💾" label={`${track.sizeKb} KB`} />
         {track.date && <Chip icon="📅" label={track.date} />}
         {track.linkHref && (
-          <Chip
-            icon="🔗"
-            label={track.linkText || "View source"}
-            href={track.linkHref}
-          />
+          <Chip icon="🔗" label={track.linkText || "View source"} href={track.linkHref} />
         )}
         {track.creator && (
-          <Chip
-            icon="✏️"
-            label={track.creator.replace(/^https?:\/\//, "").split("/")[0]}
-          />
+          <Chip icon="✏️" label={track.creator.replace(/^https?:\/\//, "").split("/")[0]} />
         )}
-        <span style={{ marginLeft: "auto", fontSize: 12, color: "#334155" }}>
-          Click to view map →
-        </span>
+        <span className="ml-auto text-sm text-slate-500">Click to view map →</span>
       </div>
     </Link>
   )
@@ -244,20 +137,11 @@ function TrackCard({ track }) {
 
 function StatBox({ icon, label, value }) {
   return (
-    <div
-      style={{
-        background: "#0f172a",
-        border: "1px solid #1e3a5f",
-        borderRadius: 8,
-        padding: "8px 12px",
-      }}
-    >
-      <div style={{ fontSize: 11, color: "#475569", marginBottom: 2 }}>
+    <div className="bg-transparent border border-slate-800 rounded-md px-3 py-2">
+      <div className="text-xs text-slate-500 mb-0.5">
         {icon} {label}
       </div>
-      <div style={{ fontSize: 14, fontWeight: 700, color: "#cbd5e1" }}>
-        {value}
-      </div>
+      <div className="text-sm font-bold text-slate-200">{value}</div>
     </div>
   )
 }
@@ -265,66 +149,23 @@ function StatBox({ icon, label, value }) {
 export default function TrackList({ tracks }) {
   if (tracks.length === 0) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "calc(100vh - 56px)",
-          flexDirection: "column",
-          gap: 16,
-        }}
-      >
-        <div style={{ fontSize: "3rem" }}>📂</div>
-        <div style={{ color: "#94a3b8", fontSize: "1rem" }}>
-          No GPX files found
-        </div>
-        <div style={{ color: "#475569", fontSize: 13 }}>
-          Add{" "}
-          <code
-            style={{
-              background: "#1e293b",
-              padding: "2px 6px",
-              borderRadius: 4,
-            }}
-          >
-            .gpx
-          </code>{" "}
-          files to the{" "}
-          <code
-            style={{
-              background: "#1e293b",
-              padding: "2px 6px",
-              borderRadius: 4,
-            }}
-          >
-            gpx-files/
-          </code>{" "}
-          directory
+      <div className="flex flex-col items-center justify-center" style={{ height: 'calc(100vh - 56px)' }}>
+        <div className="text-4xl">📂</div>
+        <div className="text-slate-400 text-base">No GPX files found</div>
+        <div className="text-slate-500 text-sm">
+          Add <code className="bg-slate-800 px-1 rounded">.gpx</code> files to the <code className="bg-slate-800 px-1 rounded">gpx-files/</code> directory
         </div>
       </div>
     )
   }
 
   return (
-    <div style={{ maxWidth: 860, margin: "0 auto", padding: "32px 20px" }}>
-      <div style={{ marginBottom: 28 }}>
-        <h1
-          style={{
-            margin: 0,
-            fontSize: "1.4rem",
-            fontWeight: 700,
-            color: "#f1f5f9",
-          }}
-        >
-          Available Tracks
-        </h1>
-        <p style={{ margin: "6px 0 0", fontSize: 13.5, color: "#64748b" }}>
-          Click a track to view on an interactive map, or download the raw GPX
-          file.
-        </p>
+    <div className="max-w-3xl mx-auto px-5 py-8">
+      <div className="mb-7">
+        <h1 className="m-0 text-xl font-bold text-slate-100">Available Tracks</h1>
+        <p className="mt-1 text-sm text-slate-400">Click a track to view on an interactive map, or download the raw GPX file.</p>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className="flex flex-col gap-4">
         {tracks.map((track) => (
           <TrackCard key={track.filename} track={track} />
         ))}

@@ -124,19 +124,10 @@ export default function TrackMap({ onBack }) {
   const { stats, meta } = data || {};
 
   return (
-    <div style={{ height: 'calc(100vh - 56px)', display: 'flex', flexDirection: 'column' }}>
+    <div className="h-[calc(100vh-56px)] flex flex-col">
       {/* Stats bar */}
       {stats && !loading && (
-        <div style={{
-          background: '#0a1120',
-          borderBottom: '1px solid #1e3a5f',
-          padding: '8px 20px',
-          display: 'flex',
-          gap: 20,
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          minHeight: 42,
-        }}>
+        <div className="bg-slate-900 border-b border-slate-700 px-5 py-2 flex gap-5 items-center flex-wrap min-h-[42px]">
           <StatBadge icon="📏" value={`${kmToMi(stats.distanceKm)} mi`} label=" distance" />
           {stats.elevGainM !== null && <StatBadge icon="📈" value={`${mToFt(stats.elevGainM).toLocaleString()} ft`} label=" gain" />}
           {stats.elevLossM !== null && <StatBadge icon="📉" value={`${mToFt(stats.elevLossM).toLocaleString()} ft`} label=" loss" />}
@@ -144,19 +135,12 @@ export default function TrackMap({ onBack }) {
           {stats.minEleM  !== null && <StatBadge icon="🏔️"  value={`${mToFt(stats.minEleM).toLocaleString()} ft`} label=" min elev" />}
           <StatBadge icon="📍" value={stats.pointCount.toLocaleString()} label=" pts" />
           {meta?.linkHref && (
-            <a href={meta.linkHref} target="_blank" rel="noreferrer"
-              style={{ fontSize: 12, color: '#60a5fa', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <a href={meta.linkHref} target="_blank" rel="noreferrer" className="text-sm text-sky-400 no-underline flex items-center gap-1">
               🔗 {meta.linkText || 'Source'} ↗
             </a>
           )}
-          <div style={{ marginLeft: 'auto' }}>
-            <a href={`/api/tracks/${encodeURIComponent(filename)}/download`} download
-              style={{
-                background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.35)',
-                color: '#93c5fd', borderRadius: 8, padding: '5px 14px',
-                fontSize: 12.5, fontWeight: 600, textDecoration: 'none',
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-              }}>
+          <div className="ml-auto">
+            <a href={`/api/tracks/${encodeURIComponent(filename)}/download`} download className="bg-sky-500/15 border border-sky-500/35 text-sky-200 rounded-md px-3 py-1.5 text-sm font-semibold inline-flex items-center gap-2">
               ⬇ Download GPX
             </a>
           </div>
@@ -164,7 +148,7 @@ export default function TrackMap({ onBack }) {
       )}
 
       {/* Map area */}
-      <div style={{ flex: 1, position: 'relative' }}>
+      <div className="flex-1 relative">
         {/* Back button (in-map) */}
         <button
           onClick={() => {
@@ -172,34 +156,21 @@ export default function TrackMap({ onBack }) {
             if (window.history.length > 1) return navigate(-1);
             navigate('/');
           }}
-          style={{
-            position: 'absolute',
-            left: 12,
-            top: 12,
-            zIndex: 20,
-            background: 'rgba(10,17,32,0.9)',
-            color: '#e2e8f0',
-            border: '1px solid #1e3a5f',
-            borderRadius: 8,
-            padding: '6px 10px',
-            cursor: 'pointer',
-            fontSize: 13,
-          }}
+          className="absolute left-3 top-3 z-20 bg-slate-900/90 text-slate-100 border border-slate-700 rounded-md px-3 py-1.5 cursor-pointer text-sm"
         >
           ← Back
         </button>
         {loading && (
-          <div style={{ position: 'absolute', inset: 0, background: '#0f172a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, zIndex: 10 }}>
-            <div style={{ width: 40, height: 40, border: '3px solid #334155', borderTop: '3px solid #3b82f6', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-            <span style={{ color: '#64748b' }}>Loading track…</span>
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <div className="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center gap-4 z-10">
+            <div className="spin" />
+            <span className="text-slate-400">Loading track…</span>
           </div>
         )}
         {error && (
-          <div style={{ position: 'absolute', inset: 0, background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
-            <div style={{ background: '#450a0a', border: '1px solid #dc2626', borderRadius: 12, padding: '24px 32px', textAlign: 'center' }}>
-              <div style={{ fontSize: '1.5rem', marginBottom: 8 }}>⚠️</div>
-              <div style={{ color: '#fca5a5' }}>{error}</div>
+          <div className="absolute inset-0 bg-slate-900 flex items-center justify-center z-10">
+            <div className="bg-red-900 border border-red-600 rounded-xl p-6 text-center">
+              <div className="text-2xl mb-2">⚠️</div>
+              <div className="text-red-200">{error}</div>
             </div>
           </div>
         )}
