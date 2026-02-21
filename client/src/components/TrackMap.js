@@ -157,7 +157,7 @@ export default function TrackMap() {
         </span>
 
         {stats && (
-          <span className="text-sm text-slate-400 whitespace-nowrap shrink-0">
+          <span className="hidden sm:block text-sm text-slate-400 whitespace-nowrap shrink-0">
             {kmToMi(stats.distanceKm)} mi
           </span>
         )}
@@ -171,14 +171,14 @@ export default function TrackMap() {
                 : 'border-slate-700 text-slate-400 hover:text-slate-200'
             }`}
           >
-            {showDetails ? '▲' : '▼'} Details
+            {showDetails ? '▲' : '▼'}<span className="hidden sm:inline"> Details</span>
           </button>
         )}
 
         <a
           href={filename ? `/api/tracks/${encodeURIComponent(filename)}/download` : '#'}
           download
-          className="bg-sky-500/15 border border-sky-500/35 text-sky-200 rounded-md px-3 py-1.5 text-sm font-semibold inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 hover:bg-sky-500/30 transition"
+          className="hidden sm:inline-flex bg-sky-500/15 border border-sky-500/35 text-sky-200 rounded-md px-3 py-1.5 text-sm font-semibold items-center gap-1.5 whitespace-nowrap shrink-0 hover:bg-sky-500/30 transition"
         >
           ⬇ Download
         </a>
@@ -214,6 +214,15 @@ export default function TrackMap() {
               <p className="w-full m-0 pt-1 text-sm text-slate-300 leading-relaxed border-t border-slate-800">
                 {meta.metaDesc}
               </p>
+            )}
+            {filename && (
+              <a
+                href={`/api/tracks/${encodeURIComponent(filename)}/download`}
+                download
+                className="sm:hidden w-full mt-1 bg-sky-500/15 border border-sky-500/35 text-sky-200 rounded-md px-4 py-2 text-sm font-semibold inline-flex items-center justify-center gap-2 hover:bg-sky-500/30 transition"
+              >
+                ⬇ Download GPX
+              </a>
             )}
           </div>
         </div>

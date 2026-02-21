@@ -20,7 +20,7 @@ export default function App() {
   const selectedTrack = match?.params?.filename ? decodeURIComponent(match.params.filename) : null;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
+    <div className={`bg-slate-900 text-slate-100 ${selectedTrack ? 'h-dvh overflow-hidden' : 'min-h-screen'}`}>
       {/* Header — hidden on track pages; TrackMap renders its own top bar */}
       {!selectedTrack && (
         <header className="bg-linear-to-br from-sky-900 via-slate-900 to-slate-800 px-6 h-14 flex items-center justify-between shadow-md sticky top-0 z-50">
