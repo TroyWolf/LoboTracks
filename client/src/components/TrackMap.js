@@ -137,7 +137,7 @@ export default function TrackMap() {
   const { stats, meta } = data || {};
 
   const goBack = () => {
-    if (window.history.length > 1) navigate(-1); else navigate('/');
+    if (window.history.length > 2) navigate(-1); else navigate('/');
   };
 
   return (
