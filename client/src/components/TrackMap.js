@@ -48,6 +48,7 @@ export default function TrackMap({ onBack }) {
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
   const [isSatellite, setIsSatellite] = useState(false);
+  const [showDesc, setShowDesc] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
   const filename = params?.filename ? decodeURIComponent(params.filename) : null;
@@ -168,6 +169,14 @@ export default function TrackMap({ onBack }) {
               🔗 {meta.linkText || 'Source'} ↗
             </a>
           )}
+          {meta?.metaDesc && (
+            <button
+              onClick={() => setShowDesc(s => !s)}
+              className={`text-sm px-2.5 py-1 rounded-md border cursor-pointer transition-colors ${showDesc ? 'bg-sky-500/20 border-sky-500/50 text-sky-300' : 'border-slate-700 text-slate-400 hover:text-slate-200'}`}
+            >
+              {showDesc ? '▲' : 'ℹ'} About
+            </button>
+          )}
           <div className="ml-auto">
             <a href={`/api/tracks/${encodeURIComponent(filename)}/download`} download className="bg-sky-500/15 border border-sky-500/35 text-sky-200 rounded-md px-3 py-1.5 text-sm font-semibold inline-flex items-center gap-2">
               ⬇ Download GPX
@@ -175,6 +184,16 @@ export default function TrackMap({ onBack }) {
           </div>
         </div>
       )}
+
+      {/* Description panel */}
+      <div
+        className="overflow-hidden transition-all duration-200 bg-slate-900 border-b border-slate-700"
+        style={{ maxHeight: showDesc && meta?.metaDesc ? '12rem' : '0' }}
+      >
+        <p className="px-5 py-3 m-0 text-sm text-slate-300 leading-relaxed">
+          {meta?.metaDesc}
+        </p>
+      </div>
 
       {/* Map area */}
       <div className="flex-1 relative">
