@@ -5,6 +5,12 @@ A Node.js + React app for browsing, viewing, and downloading GPX track files.
 
 ---
 
+For now it's only useful for the owner.
+Check it out at https://LoboTracks.com
+
+---
+
+
 ## Features
 
 - 📋 **Track list** — browse all GPX files with title, description, distance, elevation gain, and more — all sourced from each file's `<metadata>` block
